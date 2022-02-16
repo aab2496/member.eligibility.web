@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - memberaz
+name: Build and deploy WAR app to Azure Web App - memberaz
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'memberaz'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F569462EA3AC45A1934D134C8C67A01B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B162A8E0F1924E608A17696385DB0799 }}
           package: '*.war'
