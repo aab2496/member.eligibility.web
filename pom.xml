@@ -12,7 +12,7 @@
 	<groupId>member.carefirst.com</groupId>
 	<artifactId>member.eligibilty.web</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>member.eligibilty.web</name>
 	<description>Member Eligbility and ID card</description>
 	<properties>
@@ -90,7 +90,7 @@
 							<resource>
 								<directory>${project.basedir}/target</directory>
 								<includes>
-									<include>*.jar</include>
+									<include>*.war</include>
 								</includes>
 							</resource>
 						</resources>
