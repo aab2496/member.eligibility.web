@@ -11,6 +11,7 @@ public class MemberCoverageController {
 	
 	 @GetMapping("/test")
 	    public String viewBooks(Model model) {
+		 System.out.println(" Inside contoller>>>>>>>>>>>>");
 	        model.addAttribute("test", "test");
 	        return "test";
 	    }
