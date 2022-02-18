@@ -1,0 +1,887 @@
+openapi: 3.0.1
+info:
+  title: Nexus Member IdCards
+  description: Nexus project documentation
+  termsOfService: www.carefirst.com
+  contact:
+    name: Carefirst Nexus
+    email: NexusAPIDev@carefirst.com
+  license:
+    name: Carefirst propertery
+    url: https://www.carefirst.com
+  version: "1.0"
+servers:
+  - url: '{protocol}://{environment}/'
+    variables:
+      protocol:
+        default: http
+        enum:
+          - https
+      environment:
+        default: nexus-deva-np.carefirst.com   # Development Server
+        enum:
+          - nexus-deva-np.carefirst.com     # Development Server
+          - nexus-sita-np.carefirst.com    # Test Server
+tags:
+- name: member-idcard
+  description: Service for member idcard details.
+paths:
+  /members/idcards/:
+    get:
+      tags:
+      - member-idcard
+      summary: Find member idcards based on parameters
+      operationId: findMemberIdcardDetails
+      parameters:
+      - name: searchDate
+        in: query
+        description: search date
+        example: '2019-01-01'
+        schema:
+          type: string
+          format: date
+      - name: memberLifeIds
+        in: query
+        description: Member Life Id
+        example: '6754323'
+        schema:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        explode: true
+      - name: subscriberId
+        in: query
+        description: Subscriber Id
+        example: '987654321'
+        schema:
+          type: string
+      - name: groupIds
+        in: query
+        description: group id listing
+        example: '91A8'
+        schema:
+            type: array
+            items:
+              type: string
+            minItems: 0
+        explode: true
+      - name: groupFilter
+        in: query
+        description: Group based Filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/GroupFilter"
+      - name: accountId
+        in: query
+        description: Account Id
+        example: '00000897889'
+        schema:
+          type: string
+      - name: sourceSystemMemberIdFilter
+        in: query
+        description: Source System Member Id based filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/SourceSystemMemberIdFilter"
+      - name: memberSuffixFilter
+        in: query
+        description: Member Suffix based Filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/MemberSuffixFilter"
+      - name: page
+        in: query
+        description: Starting index. First page = 1.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      - name: size
+        in: query
+        description: page size in number of items (max 100)
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+      - name: sort
+        in: query
+        description: sort by 'property,direction'
+        example: 'memberLifeId,asc'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+      - name: includeImageBinary
+        in: query
+        description: flag to include image binary or not (true by default)
+        required: false
+        example: true
+        schema:
+          type: boolean
+          default: true
+      responses:
+        200:
+          description: 'Success'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/FindMemberIdcardResponse'
+        403:
+          description: 'Forbidden - unauthorized access'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        405:
+          description: 'Invalid Input' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        401:
+          description: 'Unauthorized' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        404:
+          description: 'Resource not found.'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        408:
+         description: 'Request timed out'
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        500:
+         description: 'Unexpected server'  
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+      deprecated: false
+  /members/idcards/{documentId}:
+    get:
+      tags:
+      - member-idcard
+      summary: Get member idcards based on parameters
+      operationId: getMemberIdcardDetails
+      parameters:
+      - name: documentId
+        in: path
+        description: Document Id for the idcard
+        example: 'ABD98340001'
+        required: true
+        schema:
+          type: string
+      - name: includeImageBinary
+        in: query
+        description: flag to include image binary or not (true by default)
+        required: false
+        example: true
+        schema:
+          type: boolean
+          default: true
+      responses:
+        200:
+          description: 'Success'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/GetMemberIdcardResponse'
+        403:
+          description: 'Forbidden - unauthorized access'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        405:
+          description: 'Invalid Input' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        401:
+          description: 'Unauthorized' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        404:
+          description: 'Resource not found.'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        408:
+         description: 'Request timed out'
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        500:
+         description: 'Unexpected server'  
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+      deprecated: false
+  /orders/members/idcards/transactions/:
+    get:
+      tags:
+      - member-idcard
+      summary: Get member idcard transactions based on parameters
+      operationId: getMemberIdcardTransactionDetails
+      parameters:
+      - name: searchStartDate
+        in: query
+        description: search start date
+        example: '2019-01-01'
+        schema:
+          type: string
+          format: date
+      - name: searchEndDate
+        in: query
+        description: search end date
+        example: '2019-10-10'
+        schema:
+          type: string
+          format: date
+      - name: memberLifeIds
+        in: query
+        description: Member Life Id
+        example: '6754323'
+        schema:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        explode: true
+      - name: subscriberId
+        in: query
+        description: Subscriber Id
+        example: '987654321'
+        schema:
+          type: string
+      - name: groupIds
+        in: query
+        description: group id listing
+        example: 91A8
+        schema:
+            type: array
+            items:
+              type: string
+            minItems: 0
+        explode: true
+      - name: groupFilter
+        in: query
+        description: Group based Filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/GroupFilter"
+      - name: accountId
+        in: query
+        description: Account Id
+        example: '00000897889'
+        schema:
+          type: string
+      - name: sourceSystemMemberIdFilter
+        in: query
+        description: Source System Member Id based filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/SourceSystemMemberIdFilter"
+      - name: memberSuffixFilter
+        in: query
+        description: Member Suffix based Filter
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/MemberSuffixFilter"
+      responses:
+        200:
+          description: 'Success'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberIdcardOrderTransactionResponse'
+        403:
+          description: 'Forbidden - unauthorized access'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        405:
+          description: 'Invalid Input' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        401:
+          description: 'Unauthorized' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        404:
+          description: 'Resource not found.'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        408:
+         description: 'Request timed out'
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        500:
+         description: 'Unexpected server'  
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+      deprecated: false
+    put:
+      tags:
+      - member-idcard
+      summary: Order member idcards
+      operationId: orderMemberIdcards
+      requestBody:
+        description: memberIdcardRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberIdcardRequest'
+        required: true
+      responses:
+        201:
+          description: 'Success - created'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrderMemberIdcardResponse'
+        400:
+          description: 'Bad request'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        403:
+          description: 'Forbidden - unauthorized access'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        405:
+          description: 'Invalid Input' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        401:
+          description: 'Unauthorized' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        404:
+          description: 'Resource not found.'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        408:
+         description: 'Request timed out'
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        500:
+         description: 'Unexpected server'  
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+      deprecated: false
+      x-codegen-request-body-name: memberIdcardRequest
+    patch:
+      tags:
+      - member-idcard
+      summary: Update member idcards order transaction details
+      operationId: updateMemberIdcardTransactionDetails
+      parameters:
+      - name: sourceSystemMemberId
+        required: true
+        in: query
+        description: Source SystemMember Id
+        example: 908976542
+        schema:
+          type: string
+      - name: enrollmentSystemCode
+        required: true
+        in: query
+        description: Source System code
+        schema:
+          $ref: '#/components/schemas/EnrollmentSystemCode'
+      - name: transactionId
+        required: true
+        in: query
+        example: AM69870070
+        description: transaction id for reference
+        schema:
+          type: string
+      requestBody:
+        description: updateMemberIdcardTransactionRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemberIdcardTransactionRequest'
+        required: true
+      responses:
+        200:
+          description: 'Success'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        400:
+          description: 'Bad request'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        403:
+          description: 'Forbidden - unauthorized access'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        405:
+          description: 'Invalid Input' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        401:
+          description: 'Unauthorized' 
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        404:
+          description: 'Resource not found.'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        408:
+         description: 'Request timed out'
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+        500:
+         description: 'Unexpected server'  
+         content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ResponseContext'
+      deprecated: false
+      x-codegen-request-body-name: updateMemberIdcardTransactionRequest
+components:
+  schemas:
+    FindMemberIdcardResponse:
+      title: MemberIdcardResponse
+      required: 
+      - memberIdcardDetails
+      - responseContext
+      type: object
+      properties:
+        responseContext:
+          $ref: '#/components/schemas/ResponseContext'
+        memberIdcardDetails:
+          type: object
+          description: Map of member life id to member idcard Details
+          additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/MemberIdcard'
+    GetMemberIdcardResponse:
+      title: MemberIdcardResponse
+      required: 
+      - memberIdcard
+      - responseContext
+      type: object
+      properties:
+        responseContext:
+          $ref: '#/components/schemas/ResponseContext'
+        memberIdcard:
+          $ref: '#/components/schemas/MemberIdcard'
+    MemberIdcardOrderTransactionResponse:
+      title: MemberIdcardOrderTransactionResponse
+      required: 
+      - memberIdcardTransaction
+      - responseContext
+      type: object
+      properties:
+        responseContext:
+          $ref: '#/components/schemas/ResponseContext'
+        memberIdcardTransaction:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberIdcardResponse'
+    OrderMemberIdcardResponse:
+      title: OrderMemberIdcardResponse
+      required: 
+      - transactionId
+      - responseContext
+      type: object
+      properties:
+        responseContext:
+          $ref: '#/components/schemas/ResponseContext'
+        transactionId:
+          type: string
+          example: AM69870070
+          description: transaction id for reference
+    UpdateMemberIdcardTransactionRequest:
+      title: UpdateMemberIdcardTransactionRequest
+      type: object
+      required: 
+      - sourceSubmissionStatus
+      properties:
+        sourceConfirmationNumber:
+          type: string
+          example: 'AZ679857709'
+          description: confirmation number received from source after transaction submission
+        sourceSubmissionStatus:
+          type: string
+          example: 'SUCCESS'
+          description: source transaction submission status
+    MemberIdcardRequest:
+      title: MemberIdcardRequest
+      type: object
+      properties:
+        accountId:
+          type: string
+          example: '00000897889'
+          description: Account Id
+        groupIds:
+          type: array
+          description: group id listing
+          example: '91A8'
+          items:
+            type: string
+          minItems: 0
+        subscriberId:
+          type: string
+          example: '987654321'
+          description: Subscriber Id
+        memberSuffixFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberSuffixFilter'
+          minItems: 0
+        memberLifeIds:
+          type: array
+          description: Member Life Id
+          example: '6754323'
+          items:
+            type: string
+          minItems: 0
+        sourceSystemMemberIdFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceSystemMemberIdFilter'
+          minItems: 0
+        allFamily:
+          type: boolean
+          description: order for all members in the family
+          example: false
+          default: false
+    MemberIdcardResponse:
+      title: MemberIdcardRequest
+      type: object
+      properties:
+        accountId:
+          type: string
+          example: '00000897889'
+          description: Account Id
+        groupIds:
+          type: array
+          description: group id listing
+          example: '91A8'
+          items:
+            type: string
+          minItems: 0
+        subscriberId:
+          type: string
+          example: '987654321'
+          description: Subscriber Id
+        transactionDate:
+          type: string
+          example: '20-01-2020'
+          description: Account Id
+        memberSuffixFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberSuffixFilter'
+          minItems: 0
+        memberLifeIds:
+          type: array
+          description: Member Life Id
+          example: '6754323'
+          items:
+            type: string
+          minItems: 0
+        sourceSystemMemberIdFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceSystemMemberIdFilter'
+          minItems: 0
+        allFamily:
+          type: boolean
+          description: order for all members in the family
+          example: false
+          default: false
+    GroupFilter:
+      title: GroupFilter
+      type: object
+      properties:
+        groupId:
+          type: string
+          example: 91A8
+          description: group id
+        groupAssoicationStartDate:
+          type: string
+          format: date
+          example: 2020-01-01
+          description: group association start Date
+        groupAssoicationEndDate:
+          type: string
+          example: 2020-11-01
+          format: date
+          description: group association end Date
+        productCategories:
+          type: array
+          description: Product Category list
+          example: MED
+          items:
+            $ref: '#/components/schemas/ProductCategory'
+    SourceSystemMemberIdFilter:
+      title: SourceSystemMemberIdFilter
+      type: object
+      properties:
+        sourceSystemMemberId:
+          type: string
+          example: 9180097
+          description:  source system member id
+        enrollmentSystemCode:
+          $ref: '#/components/schemas/EnrollmentSystemCode'
+    MemberSuffixFilter:
+      title: MemberSuffixFilter
+      type: object
+      properties:
+        memberSuffix:
+          type: string
+          example: 01
+          description:  member suffix
+        enrollmentSystemCode:
+          $ref: '#/components/schemas/EnrollmentSystemCode'
+    MemberIdcard:
+      type: object
+      properties:
+        documentId:
+          type: string
+          example: 'ABD98340001'
+        frontId:
+          type: string
+          example: 'ABD98340001'
+        backId:
+          type: string
+          example: 'ABD98340001'
+        memberLifeId:
+          type: string
+          example: 'ABD98340001'
+        firstName:
+          type: string
+          example: 'Albert'
+        lastName:
+          type: string
+          example: 'Einstein'
+        subscriberId:
+          type: string
+          example: '98340001'
+        groupId:
+          type: string
+          example: '983400JJ32401'
+        mimeType:
+          type: string
+          example: 'png'
+        frontImage:
+          type: string
+          example: 'ABD98340001'
+        backImage:
+          type: string
+          example: 'ABD98340001'
+        effectiveBeginDate:
+          type: string
+          example: '01-31-2019'
+        effectiveEndDate:
+          type: string
+          example: '01-31-2019'
+        dateOfBirth:
+          type: string
+          example: '01-31-2019'
+        documentDate:
+          type: string
+          example: '01-31-2019'
+        is_temporary:
+          type: boolean   
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicePhoneNumber'
+    ServicePhoneNumber:
+      type: object
+      properties:
+        description:
+          type: string
+          example: 'Customer Service'
+        phoneNumber:
+          type: string
+          example: '800-313-2223'
+    EnrollmentSystemCode:
+      title: EnrollmentSystemCode
+      type: string
+      example: '065'
+      enum:
+          - '065'
+          - '061'
+          - '171'
+          - '055'
+          - '060'
+          - '228'
+          - '209'
+          - 'UNK'
+      x-enum-varnames:
+          - NASCO_MD
+          - NASCO_DC
+          - TRZ_FACETS
+          - CFA
+          - FEP
+          - TMG
+          - WEL
+          - UNKNOWN
+    ProductCategory:
+      title: ProductCategory
+      type: string
+      example: 'MED'
+      enum:
+          - 'MED'
+          - 'DEN'
+          - 'VIS'
+          - 'DRG'
+          - 'CAT'
+          - 'WEL'
+          - 'DMM'
+          - 'LIF'
+          - 'ADD'
+          - 'DIS'
+          - 'UNK'
+      x-enum-varnames:
+          - MEDICAL
+          - DENTAL
+          - VISION
+          - DRUG
+          - CATASTROPHIC
+          - WELLNESS
+          - DISEASEMANAGEMENT
+          - LIFE
+          - ACCDEATHDISMEMB
+          - DISABILITY
+          - UNKNOWN
+    ResponseContext:
+      required:
+      - status
+      - success
+      - guid
+      - responseTime
+      - currentTimeStamp
+      type: object
+      properties:
+        status:
+          type: string
+          description:  'status of the request'
+          example: '200 OK'
+        success:
+          type: boolean
+          example: true
+        guid:
+          type: string
+          example: '08b4b150-ca44-47d8-9c4a-a87979357f35'
+          description:  'GUID for the tracking request / Auditable purpose'
+        responseTime:
+          type: string
+          example: '121 ms'
+        currentTimeStamp:
+          type: string
+          format: date-time
+          example: '2019-06-10T04:55:13.309-04:00'
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          type: string
+          example: '100.001'
+        message:
+          type: string
+          example: 'error message'
+        moreInfo:
+          type: string
+          example: 'N/A'
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetails'
+    ErrorDetails:
+      required:
+      - key
+      type: object
+      properties:
+        key:
+          type: string
+          example: 'key' 
+        value:
+          type: object
+          example: 'value'
