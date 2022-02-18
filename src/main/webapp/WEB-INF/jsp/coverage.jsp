@@ -5,6 +5,7 @@
 <img width="20%" src="<c:url value='/images/logo-carefirst.svg'/>" />
 
 
+
 </head>
 <body>
 	<h2>Plan Summary</h2>
@@ -25,7 +26,7 @@ Note: This Plan includes BlueVision.
 <tr><td>FAM 810123456</td> <td></td>  <td>1901901</td> <td></td> <td>Apr 1,2021</td> </tr>
 </table>
 
-<a href="/idcard">ID Cards</a>
+<a href="${pageContext.request.contextPath}/idcard">ID Cards</a>
 
 </body>
 </html>
